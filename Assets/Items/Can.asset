@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Can
   m_EditorClassIdentifier: 
   prefab: {fileID: 7287931952164023828, guid: 1401ff2c8c47fb647b1f2fc0c6ccebce, type: 3}
-  itemName: Can Item
+  itemName: Can
   itemIcon: {fileID: 21300000, guid: d7094718bdac022428dd29244922d06b, type: 3}
   heldRotation: {x: 0, y: 0, z: 0, w: 0}
   itemValue: 0
@@ -21,5 +21,8 @@ MonoBehaviour:
   maxNumCarried: 6
   canConsume: 0
   isStackable: 1
+  canBreak: 0
+  brokenPartsPrefabs: []
+  brokenPartsRange: {x: 0, y: 0}
   usesBatteries: 0
   maxBatteryCharge: 0
