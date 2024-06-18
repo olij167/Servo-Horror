@@ -9,6 +9,9 @@ public class PlayerUI : MonoBehaviour
 {
     public PlayerController player;
 
+    public bool showStatBars;
+    public GameObject statBarParent;
+
     public Slider healthBar;
     public float oldHealth;
     public Slider staminaBar;
@@ -37,6 +40,13 @@ public class PlayerUI : MonoBehaviour
         healthBar.maxValue = player.maxHealth;
         staminaBar.maxValue = player.maxStamina;
         oxygenBar.maxValue = player.maxOxygen;
+
+        if (!showStatBars)
+
+            statBarParent.SetActive(false);
+
+        else
+            statBarParent.SetActive(true);
     }
 
     private void Update()
@@ -60,7 +70,9 @@ public class PlayerUI : MonoBehaviour
 
         if (player.isSwimming || player.currentOxygen < player.maxOxygen)
         {
-            oxygenBar.gameObject.SetActive(true);
+            if (showStatBars)
+                oxygenBar.gameObject.SetActive(true);
+
             oxygenBar.value = player.currentOxygen;
 
             drowningPostProcessing.weight = Mathf.Lerp(1, 0, oxygenBar.value * 0.1f);

@@ -13,7 +13,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Transform handPos;
     [SerializeField] private Color selectedColour;
     private Color originalColour;
-    public PlayerInteractionRaycast firstPersonRaycast;
+    public InteractRaycast firstPersonRaycast;
     public PlayerInteractionRaycast thirdPersonRaycast;
     private SetCamera setCamera;
 
@@ -34,7 +34,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] private KeyCode consumeItemInput = KeyCode.C;
 
     [Header("Inventory Contents")]
+    public bool showWeight;
     public float inventoryWeight;
+    public bool showValue;
     public float inventoryValue;
     [SerializeField] private TextMeshProUGUI weightText;
     [SerializeField] private TextMeshProUGUI valueText;
@@ -203,7 +205,7 @@ public class Inventory : MonoBehaviour
                             slotsWithItem[i].numCarried += 1;
                             slotsWithItem[i].stackCountText.text = "[" + slotsWithItem[i].numCarried + "]";
 
-                            if (itemInWorld.GetComponent<ItemInWorld>())
+                            if (itemInWorld.GetComponent<ItemInteraction>())
                             {
                                 Destroy(itemInWorld);
 
@@ -280,7 +282,7 @@ public class Inventory : MonoBehaviour
                         {
                             SpawnNewItem(item, i);
 
-                            if (itemInWorld.GetComponent<ItemInWorld>())
+                            if (itemInWorld.GetComponent<ItemInteraction>())
                             {
                                 Destroy(itemInWorld);
                                 firstPersonRaycast.selectedObject = null;
@@ -303,7 +305,7 @@ public class Inventory : MonoBehaviour
                     {
                         SpawnNewItem(item, i);
 
-                        if (itemInWorld.GetComponent<ItemInWorld>())
+                        if (itemInWorld.GetComponent<ItemInteraction>())
                         {
                             Destroy(itemInWorld);
                             thirdPersonRaycast.selectedObject = null;
@@ -400,7 +402,7 @@ public class Inventory : MonoBehaviour
         item.physicalItem.transform.parent = null;
         item.physicalItem.GetComponent<Rigidbody>().useGravity = true;
         item.physicalItem.GetComponent<Rigidbody>().isKinematic = false;
-        selectedPhysicalItem.GetComponent<ItemInWorld>().enabled = true;
+        selectedPhysicalItem.GetComponent<ItemInteraction>().enabled = true;
         selectedPhysicalItem.GetComponent<Collider>().enabled = true;
 
         RemoveItemFromInventory(item);
@@ -428,7 +430,7 @@ public class Inventory : MonoBehaviour
         item.physicalItem.GetComponent<Rigidbody>().useGravity = true;
         item.physicalItem.GetComponent<Rigidbody>().isKinematic = false;
 
-        selectedPhysicalItem.GetComponent<ItemInWorld>().enabled = true;
+        selectedPhysicalItem.GetComponent<ItemInteraction>().enabled = true;
         selectedPhysicalItem.GetComponent<Collider>().enabled = true;
 
         item.physicalItem.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
@@ -490,7 +492,9 @@ public class Inventory : MonoBehaviour
             }
         }
         player.weight = weight;
-        weightText.text = weight.ToString("0.00") + ("KG");
+        if (showWeight)
+            weightText.text = weight.ToString("0.00") + ("KG");
+        else weightText.gameObject.SetActive(false);
         return inventoryWeight = weight;
     }
     
@@ -506,7 +510,9 @@ public class Inventory : MonoBehaviour
             }
         }
         //player.weight = value;
-        valueText.text = value.ToString("$" + "0.00");
+        if (showValue)
+            valueText.text = value.ToString("$" + "0.00");
+        else valueText.gameObject.SetActive(false);
         return inventoryValue = value;
     }
 
@@ -576,7 +582,7 @@ public class Inventory : MonoBehaviour
 
                 selectedInventoryItem.physicalItem = selectedPhysicalItem;
 
-                selectedPhysicalItem.GetComponent<ItemInWorld>().enabled = false;
+                selectedPhysicalItem.GetComponent<ItemInteraction>().enabled = false;
                 selectedPhysicalItem.GetComponent<Collider>().enabled = false;
 
                 if (selectedPhysicalItem.GetComponent<Rigidbody>() && selectedPhysicalItem.GetComponent<Rigidbody>().useGravity != false)
@@ -585,6 +591,30 @@ public class Inventory : MonoBehaviour
                 }
             }
             else selectedPhysicalItem = selectedInventoryItem.physicalItem;
+        }
+    }
+
+    public void PlaceHeldItemInWorld(InventoryItem item, Vector3 worldPos)
+    {
+        if (selectedInventoryItem != null && selectedPhysicalItem != null)
+        {
+            item.physicalItem.transform.parent = null;
+
+            item.physicalItem.transform.position = worldPos;
+
+            if (selectedInventoryItem.isInUse || item.batteryCharge < item.item.maxBatteryCharge)
+            {
+                InventoryItem copyInventoryItem = item.physicalItem.AddComponent<InventoryItem>();
+                CopyItemVariables(item, copyInventoryItem);
+            }
+
+            item.physicalItem.GetComponent<Rigidbody>().useGravity = false;
+            item.physicalItem.GetComponent<Rigidbody>().isKinematic = true;
+
+            selectedPhysicalItem.GetComponent<ItemInteraction>().enabled = true;
+            selectedPhysicalItem.GetComponent<Collider>().enabled = true;
+
+            RemoveItemFromInventory(item);
         }
     }
 
@@ -625,6 +655,8 @@ public class Inventory : MonoBehaviour
             }
         }
     }
+
+  
 
     private void SelectInventoryItemWithNumbers()
     {
@@ -811,7 +843,7 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                if (selectedItemSlot > inventorySlots.Length)
+                if (selectedItemSlot > inventorySlots.Length - 1)
                 {
                     selectedItemSlot = 0;
                 }

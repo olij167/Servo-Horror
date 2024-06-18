@@ -237,11 +237,13 @@ namespace TimeWeather
         {
             if (!toggleTimeUI)
             {
-                if (timeText != null) timeText.gameObject.SetActive(false);
-                if (dayText != null) dayText.gameObject.SetActive(false);
+                if (timeText != null) timeText.transform.parent.gameObject.SetActive(false);
 
-                toggleUITimeControls = false;
-                toggleSunTimeUI = false;
+                //if (timeText != null) timeText.gameObject.SetActive(false);
+                //if (dayText != null) dayText.gameObject.SetActive(false);
+
+                //toggleUITimeControls = false;
+                //toggleSunTimeUI = false;
             }
             else
             {

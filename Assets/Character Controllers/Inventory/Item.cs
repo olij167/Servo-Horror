@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 //To create: Right click in project window -> Create -> Inventory item
-[CreateAssetMenu(menuName ="InventoryItem")]
+[CreateAssetMenu(menuName ="Item")]
 public class Item : ScriptableObject
 {
     //the inventory item model
@@ -22,6 +22,11 @@ public class Item : ScriptableObject
 
     public bool canConsume;
     public bool isStackable;
+
+    public bool canBreak;
+    public List<GameObject> brokenPartsPrefabs;
+    public Vector2 brokenPartsRange;
+
 
     public bool usesBatteries;
     public float maxBatteryCharge;

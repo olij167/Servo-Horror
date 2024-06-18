@@ -25,7 +25,7 @@ public class PlayerInteractionRaycast : MonoBehaviour
     [SerializeField] private bool isInteraction;
 
     [HideInInspector] public bool isItemInteracted;
-    //[HideInInspector] public bool isConsumableInteracted;
+    [HideInInspector] public bool isConsumableInteracted;
 
     //[SerializeField] private TextPopUp popUpText;
 
@@ -71,6 +71,11 @@ public class PlayerInteractionRaycast : MonoBehaviour
             {
                 isItem = false;
             }
+
+            //if (hit.transform.CompareTag(""))
+            //{
+
+            //}
 
             //if (hit.transform.GetComponent<ToggleDoor>() && hit.transform.GetComponent<ToggleDoor>().enabled)
             //{
@@ -211,6 +216,13 @@ public class PlayerInteractionRaycast : MonoBehaviour
 
     }
 
+    //public void StockShelf()
+    //{
+    //    InventoryItem invItem = inventorySystem.selectedInventoryItem;
+
+    //    if ()
+    //}
+
     public IEnumerator DelaySettingFalseVariables()
     {
         if (isItemInteracted)
@@ -220,19 +232,14 @@ public class PlayerInteractionRaycast : MonoBehaviour
             isItemInteracted = false;
         }
 
-        //if (isConsumableInteracted)
-        //{
-        //    yield return new WaitForSeconds(delayTime);
+        if (isConsumableInteracted)
+        {
+            yield return new WaitForSeconds(delayTime);
 
-        //    isConsumableInteracted = false;
-        //}
+            isConsumableInteracted = false;
+        }
 
-        //if (isBreakableInteracted)
-        //{
-        //    yield return new WaitForSeconds(delayTime);
 
-        //    isBreakableInteracted = false;
-        //}
     }
 
     public IEnumerator InteractionRaycast()
